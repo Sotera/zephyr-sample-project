@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- This file is part of the zephyr-core jar file and contains the default loadout of validators -->
+    <import resource="classpath:zephyr-core-config.xml"/>
+    <import resource="classpath:catalog-service.xml"/>
+
+    <bean id="twitterSchema" class="org.zephyr.schema.Schema">
+        <property name="schemata" ref="schemata-list"/>
+        <property name="requiredFields" ref="required-set"/>
+        <property name="feedName" value="Twitter"/>
+        <property name="catalogService" ref="catalogService"/>
+    </bean>
+
+    <bean id="twitterDateFormatNormalizer" class="org.zephyr.schema.normalizer.DateFormatNormalizer">
+        <constructor-arg name="incomingFormat" value="EEE MMM dd kk:mm:ss zzz yyyy"/>
+        <constructor-arg name="outgoingFormat">
+            <util:constant static-field="org.zephyr.schema.normalizer.DateFormatNormalizer.ISO_8601_FORMAT"/>
+        </constructor-arg>
+    </bean>
+
+    <util:set id="required-set">
+        <value>id</value>
+        <value>timestamp</value>
+        <value>user</value>
+        <value>text</value>
+    </util:set>
+
+    <util:list id="schemata-list">
+        <bean id="twitterId" class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="id"/>
+            <constructor-arg name="label" value="id"/>
+            <property name="preNormalizationValidator" ref="longValidator"/>
+            <property name="postNormalizationValidator" ref="longValidator"/>
+        </bean>
+        <bean id="twitterTimestamp" class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="timestamp"/>
+            <constructor-arg name="label" value="datetime"/>
+            <property name="normalizers" ref="twitterDateFormatNormalizer"/>
+        </bean>
+        <bean id="twitterUser" class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="user"/>
+            <constructor-arg name="label" value="user_id"/>
+        </bean>
+        <bean id="twitterUserLocation" class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="userLocation"/>
+            <constructor-arg name="label" value="user_location"/>
+        </bean>
+        <bean id="twitterLatitude" class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="latitude"/>
+            <constructor-arg name="label" value="latitude"/>
+            <property name="metadata" value="primary"/>
+            <property name="preNormalizationValidator" ref="decimalDegreesLatitudeValidator"/>
+            <property name="postNormalizationValidator" ref="decimalDegreesLatitudeValidator"/>
+        </bean>
+        <bean id="twitterLongitude" class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="longitude"/>
+            <constructor-arg name="label" value="longitude"/>
+            <property name="metadata" value="primary"/>
+            <property name="preNormalizationValidator" ref="decimalDegreesLongitudeValidator"/>
+            <property name="postNormalizationValidator" ref="decimalDegreesLongitudeValidator"/>
+        </bean>
+        <bean id="twitterText" class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="text"/>
+            <constructor-arg name="label" value="text"/>
+            <property name="types" value="text"/>
+        </bean>
+    </util:list>
+
+</beans>

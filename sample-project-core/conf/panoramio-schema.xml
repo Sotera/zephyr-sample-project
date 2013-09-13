@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- This file is part of the zephyr-core jar file and contains the default loadout of validators -->
+    <import resource="classpath:zephyr-core-config.xml"/>
+    <import resource="classpath:catalog-service.xml"/>
+
+    <bean id="panoramioSchema" class="org.zephyr.schema.Schema">
+        <property name="schemata" ref="schemata-list"/>
+        <property name="requiredFields" ref="required-set"/>
+        <property name="feedName" value="Panoramio"/>
+        <property name="catalogService" ref="catalogService"/>
+    </bean>
+
+    <util:set id="required-set">
+        <value>user_id</value>
+        <value>id</value>
+        <value>date</value>
+        <value>latitude</value>
+        <value>longitude</value>
+    </util:set>
+
+    <!--  this just validates that it's a valid date.  The incoming and outgoing format is the same -->
+    <bean id="dateFormatNormalizer" class="org.zephyr.schema.normalizer.DateFormatNormalizer">
+        <constructor-arg name="incomingFormat" value="yyyy-MM-dd"/>
+        <constructor-arg name="outgoingFormat" value="yyyy-MM-dd"/>
+    </bean>
+
+    <util:list id="schemata-list">
+        <bean class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="user_id"/>
+            <constructor-arg name="label" value="user_id"/>
+        </bean>
+        <bean class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="id"/>
+            <constructor-arg name="label" value="id"/>
+        </bean>
+        <bean class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="latitude"/>
+            <constructor-arg name="label" value="latitude"/>
+            <property name="preNormalizationValidator" ref="decimalDegreesLatitudeValidator"/>
+            <property name="postNormalizationValidator" ref="decimalDegreesLatitudeValidator"/>
+        </bean>
+        <bean class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="longitude"/>
+            <constructor-arg name="label" value="longitude"/>
+            <property name="preNormalizationValidator" ref="decimalDegreesLongitudeValidator"/>
+            <property name="postNormalizationValidator" ref="decimalDegreesLongitudeValidator"/>
+        </bean>
+        <bean class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="title"/>
+            <constructor-arg name="label" value="title"/>
+        </bean>
+        <bean class="org.zephyr.schema.scheme.Scheme">
+            <constructor-arg name="rawFieldName" value="date"/>
+            <constructor-arg name="label" value="date"/>
+            <property name="normalizers" ref="dateFormatNormalizer"/>
+        </bean>
+    </util:list>
+
+</beans>

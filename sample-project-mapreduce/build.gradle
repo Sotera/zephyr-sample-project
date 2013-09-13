@@ -1,0 +1,28 @@
+description = 'sample-project-mapreduce'
+
+dependencies {
+	compile project(':sample-project-core')
+	compile 'org.zephyr:zephyr-mapreduce:0.1.0'
+	hadoopProvided 'org.apache.hadoop:hadoop-client:2.0.0-mr1-cdh4.3.0'
+	hadoopProvided 'org.slf4j:slf4j-api:1.6.6'
+	testCompile 'junit:junit:4.11'
+}
+
+task distJars(dependsOn: 'distConf', type: Copy) {
+	from configurations.runtime - configurations.hadoopProvided
+	from jar
+	include "**/*.jar"
+	into "${buildDir}/dist/lib"
+}
+
+task distConf(dependsOn: 'assemble', type: Copy) {
+	from "dist/conf"
+	from project(":sample-project-core").fileTree("conf")
+	into "${buildDir}/dist/conf"
+}
+
+task dist(dependsOn: 'distJars', type: Copy) {
+	from "dist"
+	include "*.sh"
+	into "${buildDir}/dist"
+}

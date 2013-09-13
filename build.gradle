@@ -1,0 +1,36 @@
+allprojects  {
+	apply plugin: 'maven'
+	group = 'org.zephyr'
+	version = '0.0.1-SNAPSHOT'
+}
+
+subprojects {
+	apply plugin: 'java'
+	sourceCompatibility = 1.6
+	targetCompatibility = 1.6
+  
+	repositories {
+		mavenLocal()
+		mavenCentral()
+		mavenRepo url: "https://repository.cloudera.com/artifactory/cloudera-repos"
+		mavenRepo url: "http://repo.maven.apache.org/maven2"
+		mavenRepo url: "http://repo.springsource.org/release"
+		mavenRepo url: "http://clojars.org/repo"
+		mavenRepo url: "https://repo.springsource.org/libs-milestone"
+		mavenRepo url: "http://repo.spray.cc"
+		mavenRepo url: "http://repo.typesafe.com/typesafe/repo"
+	}  
+
+	configurations {
+		hadoopProvided {
+			transitive = true
+		}
+		stormProvided {
+			transitive = true
+		}
+		compile {
+			extendsFrom hadoopProvided
+			extendsFrom stormProvided
+		}
+	}
+}

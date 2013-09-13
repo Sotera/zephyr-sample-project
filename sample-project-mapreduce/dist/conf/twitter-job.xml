@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="classpath:zephyr-mapreduce-config.xml"/>
+    <import resource="classpath:catalog-service.xml"/>
+    <import resource="classpath:twitter-schema.xml"/>
+
+    <bean id="jobConfig" class="org.zephyr.mapreduce.ZephyrMRv1Configuration">
+        <property name="jobName" value="Twitter Ingest"/>
+        <property name="parserFactory">
+            <bean class="org.zephyr.parser.TwitterParserFactory"/>
+        </property>
+        <property name="schema" ref="twitterSchema"/>
+        <property name="outputFormatter">
+            <bean class="org.zephyr.output.formatter.HiveOutputFormatter">
+                <constructor-arg name="orderedHeaders">
+                    <util:list>
+                        <value>id</value>
+                        <value>datetime</value>
+                        <value>user_id</value>
+                        <value>user_location</value>
+                        <value>latitude</value>
+                        <value>longitude</value>
+                        <value>text</value>
+                        <value>text_language</value>
+                        <value>text_language_confidence</value>
+                    </util:list>
+                </constructor-arg>
+            </bean>
+        </property>
+        <property name="enrichers">
+            <util:list value-type="org.zephyr.enricher.Enricher">
+                <bean class="org.zephyr.enricher.LanguageByTypeEnricher">
+                    <constructor-arg name="types">
+                        <util:set>
+                            <value>text</value>
+                        </util:set>
+                    </constructor-arg>
+                    <constructor-arg name="languageProfilesRoot" value="langProfiles/"/>
+                    <constructor-arg name="catalogService" ref="catalogService"/>
+                </bean>
+                <bean class="org.zephyr.enricher.TwitterLocationEnricher">
+                    <constructor-arg name="catalogService" ref="catalogService"/>
+                </bean>
+            </util:list>
+        </property>
+
+        <property name="inputPath" value="/ingest/twitter/input"/>
+        <property name="outputPath" ref="/ingest/twitter/output"/>
+        <property name="inputFormat" ref="zephyrWholeFileInputFormat"/>
+        <!-- from zephyr-mapreduce-config.xml -->
+        <property name="mapper" ref="zephyrBytesWritableMapper"/>
+        <!-- from zephyr-mapreduce-config.xml -->
+        <property name="configMap" ref="zephyrExtendedConf"/>
+    </bean>
+
+    <util:map id="zephyrExtendedConf">
+        <entry key="mapred.map.tasks" value="48"/>
+    </util:map>
+</beans>

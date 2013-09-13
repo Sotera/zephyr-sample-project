@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+          http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="classpath:zephyr-mapreduce-config.xml"/>
+    <import resource="classpath:panoramio-schema.xml"/>
+
+    <bean id="jobConfig" class="org.zephyr.mapreduce.ZephyrMRv1Configuration">
+        <property name="jobName" value="Panoramio Ingest"/>
+        <property name="preprocessor">
+            <bean class="org.zephyr.preprocessor.PanoramioPreprocessor"/>
+        </property>
+        <property name="parserFactory">
+            <bean class="org.zephyr.parser.CsvParserFactory">
+                <constructor-arg name="headers">
+                    <util:list>
+                        <value>user_id</value>
+                        <value>id</value>
+                        <value>date_str</value>
+                        <!--  pretty much useless -->
+                        <value>latitude</value>
+                        <value>longitude</value>
+                        <value>title</value>
+                        <value>date</value>
+                    </util:list>
+                </constructor-arg>
+            </bean>
+        </property>
+        <property name="schema" ref="panoramioSchema"/>
+        <property name="outputFormatter">
+            <bean class="org.zephyr.output.formatter.HiveOutputFormatter">
+                <constructor-arg name="orderedHeaders">
+                    <util:list>
+                        <value>user_id</value>
+                        <value>id</value>
+                        <value>date</value>
+                        <value>latitude</value>
+                        <value>longitude</value>
+                        <value>title</value>
+                    </util:list>
+                </constructor-arg>
+            </bean>
+        </property>
+        <property name="inputPath" value="/ingest/panoramio/input"/>
+        <property name="outputPath" value="/ingest/panoramio/output"/>
+        <property name="inputFormat" ref="zephyrTextInputFormat"/>
+        <!-- from zephyr-mapreduce-config.xml -->
+        <property name="mapper" ref="zephyrTextMapper"/>
+        <!-- from zephyr-mapreduce-config.xml -->
+        <property name="configMap" ref="extendedConf"/>
+    </bean>
+    <util:map id="extendedConf">
+        <entry key="mapred.map.tasks" value="48"/>
+    </util:map>
+</beans>
