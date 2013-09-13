@@ -1,0 +1,48 @@
+description = 'sample-project-storm'
+
+buildscript {
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath 'eu.appsatori:gradle-fatjar-plugin:0.2-rc1'
+	}
+}
+
+apply plugin: 'fatjar'
+
+dependencies {
+	compile project(':sample-project-core')
+	compile 'org.zephyr:zephyr-storm:0.0.1-SNAPSHOT'
+    compile 'storm:storm-kafka:0.8.0-wip4'
+	hadoopProvided 'org.apache.hadoop:hadoop-client:2.0.0-mr1-cdh4.3.0'
+	compile 'storm:storm:0.8.2', {
+		ext {
+			fatJarExclude = true
+		}
+	}
+	testCompile 'junit:junit:4.11'
+}
+
+fatJarPrepareFiles {
+	include 'META-INF/spring.handlers'
+	include 'META-INF/spring.schemas'
+}
+
+
+task distJars(dependsOn: 'fatJar', type: Copy) {
+	from fatJar
+	into "${buildDir}/dist/lib"
+}
+
+task distConf(dependsOn: 'distConf', type: Copy) {
+	from "dist/conf"
+	from project(":sample-project-core").fileTree("conf")
+	into "${buildDir}/dist/conf"
+}
+
+task dist(dependsOn: 'distJars', type: Copy) {
+	from "dist"
+	include "*.sh"
+	into "${buildDir}/dist"
+}
