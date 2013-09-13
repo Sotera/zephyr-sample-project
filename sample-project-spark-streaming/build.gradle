@@ -1,0 +1,15 @@
+apply plugin: 'scala'
+apply plugin: 'application'
+
+description = 'sample-project-spark-streaming'
+
+dependencies {
+    compile project(':sample-project-core')
+    compile group: 'org.zephyr', name: 'zephyr-spark-streaming', version: '0.0.1-SNAPSHOT'
+    compile group: 'org.scala-lang', name: 'scala-library', version: '2.9.3'
+    //compile group: 'org.springframework.scala', name: 'spring-scala', version: '1.0.0.M2'
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+}
+
+mainClassName = "org.zephyr.spark.streaming.StreamingDriver"
+

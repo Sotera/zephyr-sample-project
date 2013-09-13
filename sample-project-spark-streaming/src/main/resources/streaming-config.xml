@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:c="http://www.springframework.org/schema/c"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+      http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+    <bean id="parserFactory" class="org.zephyr.parser.TwitterParserFactory"/>
+    <bean id="schema" class="org.zephyr.schema.TwitterSchema"/>
+    <bean id="outputFormat" class="org.zephyr.output.formatter.HiveOutputFormatter">
+        <constructor-arg name="orderedHeaders">
+            <util:list id="twitter-output-format">
+                <value>id</value>
+                <value>datetime</value>
+                <value>user_id</value>
+                <value>user_location</value>
+                <value>latitude</value>
+                <value>longitude</value>
+                <value>text</value>
+                <value>language</value>
+            </util:list>
+        </constructor-arg>
+    </bean>
+    <util:list id="twitterEnrichers" value-type="org.zephyr.enricher.Enricher">
+        <value>org.zephyr.enricher.TwitterLocationEnricher</value>
+        <value>org.zephyr.enricher.TwitterLanguageEnricher</value>
+    </util:list>
+    <bean id="zephyrStreamer" class="org.zephyr.streaming.ZephyrStreamer"
+          c:clusterUrl="local"
+          c:username="NeilB4Zod"
+          c:password="password"
+          c:duration="5000"
+          c:parser-ref="parserFactory"
+          c:schema-ref="schema"
+          c:formatter-ref="outputFormat"
+          c:enrichers-ref="twitterEnrichers"/>
+</beans>
