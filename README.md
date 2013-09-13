@@ -4,16 +4,13 @@ Sample Project README
 This Sample Project should serve as a starting point for your own implementation of Zephyr.  In it you will find examples (some mature, some... less mature) of best ways of going about
 using Zephyr in:
  - A Map Reduce framework
- - A Storm framework
- - Standalone (ultimately, this is for testing purposes, though you could shove it into a non-distributed system if you wanted)
- 
-While we certainly intend on polishing the Storm and Spark Streaming portions more before the first release, they DO work now.  However, don't be too surprised if it changes and your 
-subsequent usage must change as well.  In specific, the Storm portion has a very ugly configuration process for the ZephyrDriver..
- 
+ - A Storm framework (checkout the storm-dev branch)
+ - A Spark Streaming framework (checkout the spark-streaming-dev branch) 
+
 Requirements
 --------------------
  - Gradle
- - Data (CSV is best, for now)
+ - Data (CSV is best, for now, though if you have XML with repeating elements, it should work too)
  
 Sample Project Core
 --------------------
