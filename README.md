@@ -49,7 +49,7 @@ empty fields around in the Record - this would cause issues with some output des
 fields we'd like to see.  If it doesn't have any, it can output a blank on its own.
 
 This description is all well and good, but what about the Schema? If you look near the top of the twitter-job.xml file, you'll see a line:
-	<code><import resource="classpath:twitter-schema.xml" /></code>
+			&lt;import resource="classpath:twitter-schema.xml" /&gt;
 	
 This is important because our core code - the Parsers, Outputters, Preprocessors, Enrichers - these are all platform agnostic.  They don't care if you're running in MR or Storm or Spark or on a Potato.
 Anything in the ETL process that is *not* strictly "reading data (physical)", "distributing data", or "writing data" is in the "sample-project-mapreduce|storm|standalone|spark-streaming" projects.  
@@ -86,7 +86,7 @@ big, actual validation routine.  There's flexibility there.  The big reason for 
 Effectively, it can speed performance up.
 
 Another field, that you won't see (but, if you are working on a secure system, desperately want), is this property:
-			<code><property name="visibility" value="AC1&AC2&AC3" /></code>
+			&lt;property name="visibility" value="AC1&AC2&AC3" /&gt;
 			
 This property allows you to specify an Entry by Entry level visibility tag.  
 
