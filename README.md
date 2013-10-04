@@ -25,7 +25,7 @@ We'll use sample-project-mapreduce and sample-project-core for this tour, and we
 
 To start with, we'll start at the final bit of glue - under sample-project-mapreduce/resources/distributed-cache/resources/twitter-job.xml.
 
-This file define our job flow to our ZephyrDriver.  It gives our job a name, defines the input and output locations, and allows us to specify what ParserFactory to use, what Schema to use, what 
+This file defines our job flow to our ZephyrDriver.  It gives our job a name, defines the input and output locations, and allows us to specify what ParserFactory to use, what Schema to use, what
 Enrichers we'd like to use, and our OutputFormat we'd like to use.
 
 The way our flow is going to operate, at a high level, is:
@@ -45,11 +45,11 @@ We also define a list of enrichers to use - and these enrichers happen in order.
 to the next enricher anyway.
 
 Lastly, we define an output formatter - a HiveOutputFormatter, to be specific - and we configure it with the order and number of fields we're expecting to write out.  Zephyr does not carry
-empty fields around in the Record - this would cause issues with some output destinations.  Instead we don't pass anything at all, but we do are declaring to our HiveOutputFormatter what 
+empty fields around in the Record - this would cause issues with some output destinations.  Instead we don't pass anything at all, but we are declaring to our HiveOutputFormatter what
 fields we'd like to see.  If it doesn't have any, it can output a blank on its own.
 
 This description is all well and good, but what about the Schema? If you look near the top of the twitter-job.xml file, you'll see a line:
-	<import resource="classpath:twitter-schema.xml" />
+	<code><import resource="classpath:twitter-schema.xml" /></code>
 	
 This is important because our core code - the Parsers, Outputters, Preprocessors, Enrichers - these are all platform agnostic.  They don't care if you're running in MR or Storm or Spark or on a Potato.
 Anything in the ETL process that is *not* strictly "reading data (physical)", "distributing data", or "writing data" is in the "sample-project-mapreduce|storm|standalone|spark-streaming" projects.  
@@ -86,7 +86,7 @@ big, actual validation routine.  There's flexibility there.  The big reason for 
 Effectively, it can speed performance up.
 
 Another field, that you won't see (but, if you are working on a secure system, desperately want), is this property:
-			<property name="visibility" value="AC1&AC2&AC3" />
+			<code><property name="visibility" value="AC1&AC2&AC3" /></code>
 			
 This property allows you to specify an Entry by Entry level visibility tag.  
 
