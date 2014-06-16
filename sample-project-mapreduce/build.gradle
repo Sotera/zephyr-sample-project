@@ -1,9 +1,13 @@
+// defaults to cdh5version from gradle.properties file, but can be overriden via -Pcdhversion=cdh4 on command line
+// pulls all actual property values from gradle.properties
+def cdh_version = project.hasProperty('cdhversion') && cdhversion == "cdh4" ? cdh4version : cdh5version
+
 description = 'sample-project-mapreduce'
 
 dependencies {
 	compile project(':sample-project-core')
-	compile 'org.zephyr:zephyr-mapreduce:0.1.0'
-	hadoopProvided 'org.apache.hadoop:hadoop-client:2.0.0-mr1-cdh4.3.0'
+	compile 'org.zephyr:zephyr-mapreduce:0.2.0'
+	hadoopProvided group: 'org.apache.hadoop', name: 'hadoop-client', version: cdh_version
 	hadoopProvided 'org.slf4j:slf4j-api:1.6.6'
 	testCompile 'junit:junit:4.11'
 }

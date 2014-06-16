@@ -1,7 +1,7 @@
 description = 'sample-project-core'
 
 dependencies {
-	compile 'org.zephyr:zephyr-core:0.1.0'
+	compile 'org.zephyr:zephyr-core:0.2.0'
 	compile 'com.cybozu.labs:langdetect:1.1-20120112'
 	hadoopProvided 'org.slf4j:slf4j-api:1.6.6' // for whatever reason, 1.6.4 can't be found in mavenCentral
 	hadoopProvided 'com.google.guava:guava:11.0.2'
