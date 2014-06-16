@@ -48,8 +48,8 @@
             </util:list>
         </property>
 
-        <property name="inputPath" value="/ingest/twitter/input"/>
-        <property name="outputPath" value="/ingest/twitter/output"/>
+        <property name="inputPath" value="/tmp/zephyr-twitter-example"/>
+        <property name="outputPath" value="/tmp/zephyr-twitter-output"/>
         <property name="inputFormat" ref="zephyrWholeFileInputFormat"/>
         <!-- from zephyr-mapreduce-config.xml -->
         <property name="mapper" ref="zephyrBytesWritableMapper"/>
