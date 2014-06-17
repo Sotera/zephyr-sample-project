@@ -58,6 +58,6 @@
     </bean>
 
     <util:map id="zephyrExtendedConf">
-        <entry key="mapred.map.tasks" value="48"/>
+        <entry key="mapred.map.tasks" value="1"/>
     </util:map>
 </beans>
