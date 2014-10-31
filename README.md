@@ -118,5 +118,3 @@ Gotchas
 
 Zephyr Storm works - in standalone.  It might no be super pretty and elegant yet, but it does work - and the actual ET part of Zephyr is very mature, so the most you have to worry about is 
 the zephyr-storm scaffolding.  
-
-I hope that's enough for you to get started.  Please feel free to contact me at dwayne.pryce@soteradefense.com.  Eventually, we'll create a mailing list to handle this stuff.
